@@ -10,8 +10,9 @@ import java.util.Scanner;
 
 public class Menu {
     private final Scanner scanner;
+    private static final String DATE_FORMATTER = "yyyy/MM/dd";
 
-    TaskService taskService = new TaskService();
+    private final TaskService taskService = new TaskService();
 
     public Menu(Scanner scanner) {
         this.scanner = scanner;
@@ -23,7 +24,8 @@ public class Menu {
         System.out.println("2: Показать все задачи");
         System.out.println("3: Показать задачи по датам");
         System.out.println("4: Смотреть архив удаленных задач");
-        System.out.println("5: Выход из прграммы");
+        System.out.println("5: Сгруппировать по датам");
+        System.out.println("6: Выход из программы");
     }
 
     public void printMessageMenu() {
@@ -64,7 +66,7 @@ public class Menu {
                             taskService.printAllTasks();
                         } catch (TaskNotFoundException e) {
                             e.printStackTrace();
-                            start();
+                            break;
                         }
                         int key1 = 0;
                         do {
@@ -80,63 +82,21 @@ public class Menu {
                                 key1 = Integer.parseInt(str1);
                             }
                             switch (key1) {
-                                case 1: {
+                                case 1 -> {
                                     System.out.println("Введите id задачи для удаления");
-                                    String s = this.scanner.nextLine();
-                                    int id = 0;
-                                    if (isDigit(s)){
-                                        id = Integer.parseInt(s);
-                                    } else {
-                                        try {
-                                            throw new IncorrectArgumentException("Введите нормальный ид!");
-                                        } catch (IncorrectArgumentException e) {
-                                            e.printStackTrace();
-                                            break;
-                                        }
-                                    }
-                                    try {
-                                        taskService.remove(id);
-                                        System.out.println("Задача удалена");
-                                        break;
-                                    } catch (TaskNotFoundException e) {
-                                        e.printStackTrace();
-                                    }
+                                    removeTaskPartOfMenu();
                                     break;
                                 }
-                                case 2: {
+                                case 2 -> {
                                     System.out.println("Введите id задачи для изменения");
-                                    String s = this.scanner.nextLine();
-                                    int id = 0;
-                                    if (isDigit(s)){
-                                        id = Integer.parseInt(s);
-                                    } else {
-                                        try {
-                                            throw new IncorrectArgumentException("Введите нормальный ид!");
-                                        } catch (IncorrectArgumentException e) {
-                                            e.printStackTrace();
-                                            break;
-                                        }
-                                    }
-                                    try {
-                                        taskService.findById(id);
-                                    } catch (TaskNotFoundException e) {
-                                        e.printStackTrace();
-                                        break;
-                                    }
-                                    try {
-                                        taskService.updateTask(id, printCreateNewTask());
-                                        System.out.println("Задача обновлена!");
-                                        break;
-                                    } catch (TaskNotFoundException | IncorrectArgumentException e) {
-                                        e.printStackTrace();
-                                    }
+                                    updateTaskPartOfMenu();
                                     break;
                                 }
-                                case 3: {
+                                case 3 -> {
                                     System.out.println("Выход в меню...");
                                     break;
                                 }
-                                default: {
+                                default -> {
                                     System.out.println("Введите правильный номер меню\n");
                                 }
                             }
@@ -146,7 +106,7 @@ public class Menu {
                     }
                     case 3: {
                             try {
-                                taskService.printAllTasksByDate(taskService.getAllByDate(enterDate()));
+                                taskService.getAllByDate(enterDate());
                             } catch (TaskNotFoundException | IncorrectArgumentException e) {
                                 e.printStackTrace();
                                 break;
@@ -169,57 +129,11 @@ public class Menu {
                             switch (key1) {
                                 case 1: {
                                     System.out.println("Введите id задачи");
-                                    String s = this.scanner.nextLine();
-                                    int id = 0;
-                                    if (isDigit(s)){
-                                        id = Integer.parseInt(s);
-                                    } else {
-                                        try {
-                                            throw new IncorrectArgumentException("Введите нормальный ид!");
-                                        } catch (IncorrectArgumentException e) {
-                                            e.printStackTrace();
-                                            break;
-                                        }
-                                    }
-                                    try {
-                                        taskService.remove(id);
-                                        System.out.println("Задача удалена");
-                                        break;
-                                    } catch (TaskNotFoundException e) {
-                                        e.printStackTrace();
-                                    }
-                                    break;
+                                    removeTaskPartOfMenu();
                                 }
                                 case 2: {
                                     System.out.println("Введите id задачи");
-                                    //this.scanner.nextLine();
-                                    String s = this.scanner.nextLine();
-                                    int id = 0;
-                                    if (isDigit(s)){
-                                        id = Integer.parseInt(s);
-                                    } else {
-                                        try {
-                                            throw new IncorrectArgumentException("Введите нормальный ид!");
-                                        } catch (IncorrectArgumentException e) {
-                                            e.printStackTrace();
-                                            break;
-                                        }
-                                    }
-                                    try {
-                                        taskService.findById(id);
-                                    } catch (TaskNotFoundException e) {
-                                        e.printStackTrace();
-                                        break;
-                                    }
-                                    try {
-                                        taskService.updateTask(id, printCreateNewTask());
-                                        System.out.println("Задача обновлена!");
-                                        break;
-                                    } catch (TaskNotFoundException | IncorrectArgumentException e) {
-                                        e.printStackTrace();
-
-                                    }
-                                    break;
+                                    updateTaskPartOfMenu();
                                 }
                                 case 3: {
                                     System.out.println("Выход в меню...");
@@ -240,21 +154,80 @@ public class Menu {
                             taskService.printRemovedTasks();
                         } catch (TaskNotFoundException e) {
                             e.printStackTrace();
+                            break;
                         }
                     }
                     case 5: {
+                        try {
+                            System.out.println(taskService.getAllGroupedByDate());
+                        } catch (TaskNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 6: {
                         System.out.println("Завершение программы");
                         break;
                     }
                     default:
                         System.out.println("Введите правильный номер меню\n");
                 }
-            } while (key != 5);
+            } while (key != 6);
         }
     }
 
+    private void updateTaskPartOfMenu() {
+        String s = this.scanner.nextLine();
+        int id = 0;
+        if (isDigit(s)){
+            id = Integer.parseInt(s);
+        } else {
+            try {
+                throw new IncorrectArgumentException("Введите нормальный ид!");
+            } catch (IncorrectArgumentException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        try {
+            taskService.findById(id);
+        } catch (TaskNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        try {
+            taskService.updateTask(id, printCreateNewTask());
+            System.out.println("Задача обновлена!");
+            return;
+        } catch (TaskNotFoundException | IncorrectArgumentException e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+
+    private void removeTaskPartOfMenu() {
+        String s = this.scanner.nextLine();
+        int id = 0;
+        if (isDigit(s)){
+            id = Integer.parseInt(s);
+        } else {
+            try {
+                throw new IncorrectArgumentException("Введите нормальный ид!");
+            } catch (IncorrectArgumentException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        try {
+            taskService.remove(id);
+            System.out.println("Задача удалена");
+            return;
+        } catch (TaskNotFoundException e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+
     private Task printCreateNewTask() throws IncorrectArgumentException {
-        //this.scanner.nextLine();
         System.out.print("Введите имя задачи: ");
         String name = null;
         name = this.scanner.nextLine();
@@ -348,7 +321,7 @@ public class Menu {
             throw new IncorrectArgumentException("День должен быть числом!");
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
         LocalDate parse = LocalDate.parse(date, formatter);
         return parse;
     }

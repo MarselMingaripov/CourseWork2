@@ -9,15 +9,6 @@ public class WeeklyTask extends Task{
         super(title, type, description);
     }
 
-    public Repeatability getRepeatability() {
-        return WEEKLY_REPEATABILITY;
-    }
-
-    @Override
-    public void printDateOfRepeat(){
-        LocalDate localDate = getDateTime().toLocalDate().plusDays(7);
-        System.out.println(localDate);
-    }
 
     @Override
     public String toString() {
@@ -27,10 +18,7 @@ public class WeeklyTask extends Task{
 
     @Override
     public boolean appearsIn(LocalDate localDate) {
-        if (localDate.isEqual(getDateTime().toLocalDate().plusDays(7)) || localDate.isEqual(localDate.now())){
-            if (localDate.isEqual(localDate.now())) {
-                setDateTime(LocalDateTime.now());
-            }
+        if (localDate.isAfter(getDateTime().toLocalDate()) || localDate.isEqual(getDateTime().toLocalDate()) && localDate.getDayOfWeek() == getDateTime().getDayOfWeek()){
             return true;
         } else {
             return false;

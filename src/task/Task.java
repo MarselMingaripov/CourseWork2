@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public abstract class Task implements RepeatIn{
-    public static int idGenerator = 1;
+    private static int idGenerator = 1;
 
     private int id;
     private String title;
@@ -89,5 +89,4 @@ public abstract class Task implements RepeatIn{
 
 
     public abstract boolean appearsIn(LocalDate localDate);
-    public abstract void printDateOfRepeat();
 }

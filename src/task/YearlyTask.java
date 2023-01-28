@@ -10,10 +10,6 @@ public class YearlyTask extends Task{
 
     }
 
-    public Repeatability getMONTHLY_REPEATABILITY() {
-        return YEARLY_REPEATABILITY;
-    }
-
     @Override
     public String toString() {
         return super.toString() +
@@ -22,19 +18,10 @@ public class YearlyTask extends Task{
 
     @Override
     public boolean appearsIn(LocalDate localDate) {
-        if (localDate.isEqual(getDateTime().toLocalDate().plusYears(1)) || localDate.isEqual(localDate.now())){
-            if (localDate.isEqual(localDate.now())) {
-                setDateTime(LocalDateTime.now());
-            }
+        if (localDate.isAfter(getDateTime().toLocalDate()) || localDate.isEqual(getDateTime().toLocalDate()) && localDate.getDayOfYear() == getDateTime().getDayOfYear()){
             return true;
         } else {
             return false;
         }
-    }
-
-    @Override
-    public void printDateOfRepeat(){
-        LocalDate localDate = getDateTime().toLocalDate().plusYears(1);
-        System.out.println(localDate);
     }
 }

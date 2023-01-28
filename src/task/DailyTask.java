@@ -9,10 +9,6 @@ public class DailyTask extends Task{
 
     }
 
-    public Repeatability getMONTHLY_REPEATABILITY() {
-        return DAILY_REPEATABILITY;
-    }
-
     @Override
     public String toString() {
         return super.toString() +
@@ -22,11 +18,5 @@ public class DailyTask extends Task{
     @Override
     public boolean appearsIn(LocalDate localDate) {
         return localDate.isAfter(getDateTime().toLocalDate()) || localDate.isEqual(getDateTime().toLocalDate());
-    }
-
-    @Override
-    public void printDateOfRepeat(){
-        LocalDate localDate = getDateTime().toLocalDate().plusDays(1);
-        System.out.println(localDate);
     }
 }

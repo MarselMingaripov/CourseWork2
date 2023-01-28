@@ -10,10 +10,6 @@ public class MonthlyTask extends Task{
 
     }
 
-    public Repeatability getMONTHLY_REPEATABILITY() {
-        return MONTHLY_REPEATABILITY;
-    }
-
 
     @Override
     public String toString() {
@@ -23,19 +19,10 @@ public class MonthlyTask extends Task{
 
     @Override
     public boolean appearsIn(LocalDate localDate) {
-        if (localDate.isEqual(getDateTime().toLocalDate().plusMonths(1)) || localDate.isEqual(localDate.now())){
-            if (localDate.isEqual(localDate.now())) {
-                setDateTime(LocalDateTime.now());
-            }
+        if (localDate.isAfter(getDateTime().toLocalDate()) || localDate.isEqual(getDateTime().toLocalDate()) && localDate.getDayOfMonth() == getDateTime().getDayOfMonth()){
             return true;
         } else {
             return false;
         }
-    }
-
-    @Override
-    public void printDateOfRepeat(){
-        LocalDate localDate = getDateTime().toLocalDate().plusMonths(1);
-        System.out.println(localDate);
     }
 }

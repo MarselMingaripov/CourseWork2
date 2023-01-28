@@ -8,8 +8,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class TaskService {
-    Map<Integer, Task> taskMap = new HashMap<>();
-    Set<Task> removedTask = new HashSet<>();
+    private final Map<Integer, Task> taskMap = new HashMap<>();
+    private final Set<Task> removedTask = new HashSet<>();
 
     public void add(Task task) {
         taskMap.put(task.getId(), task);
@@ -26,13 +26,8 @@ public class TaskService {
     public List<Task> getAllByDate(LocalDate localDate) throws TaskNotFoundException {
         List<Task> taskList = new ArrayList<>();
         for (Task task : taskMap.values()) {
-            if (task.appearsIn(localDate) && task.getClass() != OneTimeTask.class) {
+            if (task.appearsIn(localDate)) {
                 taskList.add(task);
-            } else {
-                if (task.getDateTime().toLocalDate().isEqual(localDate) && task.getClass() == OneTimeTask.class) {
-                    taskList.add(task);
-                    remove(task.getId());
-                }
             }
         }
         if (taskList.isEmpty()) {
@@ -41,10 +36,17 @@ public class TaskService {
         return taskList;
     }
 
-    public void printAllTasksByDate(List<Task> taskList) {
-        for (Task task : taskList) {
-            System.out.println(task.toString());
+    public Map<LocalDate, ArrayList<Task>> getAllGroupedByDate() throws TaskNotFoundException {
+        Map<LocalDate, ArrayList<Task>> localDateArrayListMap = new HashMap<>();
+        if (!taskMap.isEmpty()) {
+            for (Task value : taskMap.values()) {
+                localDateArrayListMap.computeIfAbsent(value.getDateTime().toLocalDate(), k -> new ArrayList<>()).
+                        add(value);
+            }
+        } else {
+            throw new TaskNotFoundException("Задачи не найдены!");
         }
+        return localDateArrayListMap;
     }
 
     public void printAllTasks() throws TaskNotFoundException {
@@ -63,7 +65,6 @@ public class TaskService {
         }
         taskMap.replace(id, task);
         taskMap.get(id).setId(id);
-        Task.idGenerator -= 1;
     }
 
     public void findById(int id) throws TaskNotFoundException {
